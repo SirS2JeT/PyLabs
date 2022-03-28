@@ -1,16 +1,25 @@
-# This is a sample Python script.
+import pandas as pd
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+df = pd.DataFrame({
+    'Labels': list('AAABBCCA'),
+    'Values': [0, 1, 2, 3, 4, 5, None, None],
+    'Colors': ['red', 'blue', 'blue', 'green', 'red', 'black', 'green', 'red']
+    })
 
+#1
+df_medians = df.groupby('Colors')['Values'].median()
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+print(df_medians, end='\n\n')
 
+#2
+df_refilled = df
+df_refilled['Values'] = df.groupby('Colors')['Values'].transform(lambda x: x.fillna(x.median()))
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+print(df_refilled, end='\n\n')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+#3
+df_avrg = df_refilled.groupby('Colors')['Values'].mean()[df_refilled.groupby('Colors')['Values'].mean() > df_refilled['Values'].mean()]
+
+print(df_avrg, end='\n\n')
+print("Overall mean = " + str(df_refilled['Values'].mean()), end='\n\n')
+print(df_refilled.groupby('Colors')['Values'].mean())
